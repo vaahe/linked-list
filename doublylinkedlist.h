@@ -5,22 +5,26 @@
 #include <ostream>
 
 template<class T>
-class iterator {
+class iterator
+{
     T i;
 public:
     explicit iterator(int position = 0) : i(position) {} 
     //keyword 'explicit' is used to mark constructor to not implicitly convert types
 
-    T operator*() const {
+    T operator*() const
+    {
         return i;
     }
 
-    iterator& operator++() {
+    iterator& operator++()
+    {
         ++i;
         return *this;
     }
 
-    bool operator!=(const iterator &other) {
+    bool operator!=(const iterator &other)
+    {
         return i != other.i;
     }
 };
@@ -30,15 +34,31 @@ typedef iterator<DoublyLinkedList*> list_iterator;
 typedef iterator<const DoublyLinkedList*> list_const_iterator;
 
 
-struct Node {
+struct Node
+{
     int data;
     Node* next;
     Node* prev;
+
+    Node() {
+        data = 0;
+        next = prev = nullptr;
+    }
+
+    Node(int data, Node* next = nullptr, Node* prev = nullptr)
+    {
+        this->data = data;
+        this->next = next;
+        this->prev = prev;
+    }
 };
 
 
-class DoublyLinkedList {
+class DoublyLinkedList
+{
     Node* head;
+    Node* tail;
+    int list_size;
 
 public:
     DoublyLinkedList();  //default constructor
@@ -64,6 +84,7 @@ public:
     void merge(DoublyLinkedList& list);  //merges two linked lists into one
     bool remove_if(bool);  //removes elements fulfilling condition
     void unique();  //removes duplicate values
+    void pop_front();  //removes the first element
 
     friend std::ostream& operator<<(std::ostream&, const DoublyLinkedList&);
     bool operator==(DoublyLinkedList&);
