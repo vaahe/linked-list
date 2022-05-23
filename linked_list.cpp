@@ -6,6 +6,15 @@ LinkedList::LinkedList() {
 	m_list_size = 0;
 }
 
+LinkedList::LinkedList(const LinkedList& otherList) {
+	Node* current = otherList.m_head;
+	Node* prev = m_head;
+	while (current) {
+		prev = new Node(current->m_data, current->m_next, current->m_prev);
+		current = current->m_next;
+		prev = prev->m_next;
+	}
+}
 
 LinkedList::~LinkedList() {
 	clear();
@@ -143,4 +152,38 @@ void LinkedList::print() {
 	}
 	else
 		std::cout << "List is empty!\n";
+}
+
+//copy assignment operator
+LinkedList::operator=(const LinkedList& otherList) {
+	Node* new_node = new Node;
+	if (&otherList == this)
+		return *this;
+	else
+		clear();
+
+	new_node = otherList.m_head;
+
+	return *new_node;
+}
+
+//move assignment operator
+LinkedList::operator=(LinkedList&& otherList) {
+	if (&otherList == this)
+		return *this;
+
+	Node* new_node = new Node;
+	new_node = otherList.m_head;
+
+	return *new_node;
+}
+
+std::ostream& LinkedList::operator<<(std::ostream& out, const LinkedList& otherList) {
+	Node* new_node = new Node;
+	new_node = otherList.m_head;
+
+	while (new_node != nullptr) {
+		out<<new_node->m_data<<" ";
+		new_node = new_node->m_next;
+	}
 }
