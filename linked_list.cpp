@@ -29,9 +29,9 @@ Node* LinkedList::back() {
 }
 
 bool LinkedList::empty() {
-	if (m_list_size == 0) 
+	if (m_list_size == 0)
 		return true;
-	else 
+	else
 		return false;
 }
 
@@ -48,7 +48,7 @@ void LinkedList::push_front(int data) {
 
 	if (m_head != nullptr)
 		new_node->m_next->m_prev = new_node;
-	else 
+	else
 		m_tail = new_node;
 
 	m_head = new_node;
@@ -155,7 +155,8 @@ void LinkedList::print() {
 }
 
 //copy assignment operator
-LinkedList::operator=(const LinkedList& otherList) {
+/*
+LinkedList& LinkedList::operator=(const LinkedList& otherList) {
 	Node* new_node = new Node;
 	if (&otherList == this)
 		return *this;
@@ -164,26 +165,43 @@ LinkedList::operator=(const LinkedList& otherList) {
 
 	new_node = otherList.m_head;
 
-	return *new_node;
+	return otherList;
 }
+*/
 
 //move assignment operator
-LinkedList::operator=(LinkedList&& otherList) {
+LinkedList& LinkedList::operator=(LinkedList&& otherList) {
 	if (&otherList == this)
 		return *this;
 
 	Node* new_node = new Node;
 	new_node = otherList.m_head;
 
-	return *new_node;
+	return otherList;
 }
 
-std::ostream& LinkedList::operator<<(std::ostream& out, const LinkedList& otherList) {
+bool LinkedList::operator==(LinkedList& otherList) {
+	if (m_head == nullptr && otherList.m_head == nullptr)
+		return true;
+
+	Node* temp = otherList.m_head;
+	while (temp != nullptr) {
+		temp = temp->m_next;
+		m_head = m_head->m_next;
+		if (temp->m_data != m_head->m_data)
+			return false;
+	}
+	return true;
+}
+
+std::ostream& operator<<(std::ostream& out, const LinkedList& otherList) {
 	Node* new_node = new Node;
 	new_node = otherList.m_head;
 
 	while (new_node != nullptr) {
-		out<<new_node->m_data<<" ";
+		out << new_node->m_data << " ";
 		new_node = new_node->m_next;
 	}
+
+	return out;
 }
