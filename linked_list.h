@@ -89,8 +89,7 @@ public:
     void pop_front();  //removes the first element
     void pop_back();
     void print();
-    std::ostream& operator<<(std::ostream&, const LinkedList&);
-    //bool operator==(LinkedList&);
+    bool operator==(LinkedList&);
     //bool operator!=(LinkedList&);
     LinkedList& operator=(const LinkedList&);  //copy operator assignment
     LinkedList& operator=(LinkedList&&);  //move operator assignment
@@ -101,10 +100,12 @@ public:
     //LinkedList& operator>(const LinkedList&);
     //LinkedList& operator>=(const LinkedList&);
 
-private:
+public:
     Node* m_head;
     Node* m_tail;
     int m_list_size;
 };
+
+std::ostream& operator<<(std::ostream&, const LinkedList&);
 
 #endif // !LINKED_LIST_H
