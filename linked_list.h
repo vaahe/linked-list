@@ -4,7 +4,7 @@
 #include <initializer_list>
 #include <ostream>
 
-template<class T>
+template<class T*>
 class Iterator {
 public:
     explicit Iterator(T* ptr) : m_ptr(ptr) {}
@@ -43,8 +43,8 @@ private:
 };
 
 
-typedef Iterator<LinkedList*> li;
-typedef Iterator<const LinkedList*> const_li;
+//typedef Iterator<LinkedList*> li;
+//typedef Iterator<const LinkedList*> const_li;
 
 
 struct Node {
@@ -84,21 +84,21 @@ public:
     void resize(int);  //changes size
     //void splice(li, LinkedList&);  //transfers elements from one linked list to another
     //void merge(LinkedList& list);  //merges two linked lists into one
-    //bool remove_if(bool);  //removes elements fulfilling condition
+    //bool remove_if(li, li, bool);  //removes elements fulfilling condition
     void unique();  //removes duplicate values
     void pop_front();  //removes the first element
     void pop_back();
     void print();
     bool operator==(LinkedList&);
-    //bool operator!=(LinkedList&);
-    LinkedList& operator=(const LinkedList&);  //copy operator assignment
-    LinkedList& operator=(LinkedList&&);  //move operator assignment
+    bool operator!=(LinkedList&);
+    LinkedList& operator=(LinkedList&);  //copy operator assignment
+    //LinkedList& operator=(LinkedList&&);  //move operator assignment
     //LinkedList& operator+(LinkedList&);
     //LinkedList& operator+=(const LinkedList&);
-    //LinkedList& operator<(const LinkedList&);
-    //LinkedList& operator<=(const LinkedList&);
-    //LinkedList& operator>(const LinkedList&);
-    //LinkedList& operator>=(const LinkedList&);
+    bool operator<(LinkedList&);
+    bool operator<=(LinkedList&);
+    bool operator>(LinkedList&);
+    bool operator>=(LinkedList&);
 
 public:
     Node* m_head;
