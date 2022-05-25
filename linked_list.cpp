@@ -6,6 +6,7 @@ LinkedList::LinkedList() {
 	m_list_size = 0;
 }
 
+//copy constructor
 LinkedList::LinkedList(const LinkedList& otherList) {
 	Node* current = otherList.m_head;
 	Node* prev = m_head;
@@ -169,7 +170,8 @@ LinkedList& LinkedList::operator=(const LinkedList& otherList) {
 }
 */
 
-//move assignment operator
+//move operator assignment
+/*
 LinkedList& LinkedList::operator=(LinkedList&& otherList) {
 	if (&otherList == this)
 		return *this;
@@ -179,20 +181,73 @@ LinkedList& LinkedList::operator=(LinkedList&& otherList) {
 
 	return otherList;
 }
+*/
+
+//copy operator assignment
+LinkedList& LinkedList::operator=(LinkedList& ohterList) {
+	m_head = otherList.m_head;
+
+	if (this == &otherList)
+		return *this;
+
+	while (m_head != nullptr) {
+		m_head->m_next = otherList.m_head->m_next;
+	}
+
+	return *this;
+}
+
+LinkedList& LinkedList::operator+(LinkedList& otherList) {
+
+}
 
 bool LinkedList::operator==(LinkedList& otherList) {
 	if (m_head == nullptr && otherList.m_head == nullptr)
 		return true;
 
-	Node* temp = otherList.m_head;
-	while (temp != nullptr) {
-		temp = temp->m_next;
-		m_head = m_head->m_next;
-		if (temp->m_data != m_head->m_data)
+	Node* new_node = otherList.m_head;
+	while (new_node != nullptr) {
+		if (new_node->m_data != m_head->m_data)
 			return false;
+
+		new_node = new_node->m_next;
+		m_head = m_head->m_next;
 	}
 	return true;
 }
+
+bool LinkedList::operator!=(LinkedList& otherList) {
+	if (m_head == nullptr && otherList.m_head == nullptr)
+		return false;
+
+	Node* new_node = otherList.m_head;
+	while (new_node != nullptr) {
+		if (new_node->m_data == m_head->m_data)
+			return false;
+		
+		new_node = new_node->m_next;
+		m_head = m_head->m_next;
+	}
+	return true;
+}
+
+bool LinkedList::operator<(LinkedList& otherList) {
+	return this->m_list_size < otherList.m_list_size;
+}
+
+bool LinkedList::operator<=(LinkedList& otherList) {
+	return this->m_list_size <= otherList.m_list_size;
+}
+
+bool LinkedList::operator>(LinkedList& otherList) {
+	return this->m_list_size > otherList.m_list_size;
+}
+
+bool LinkedList::operator>=(LinkedList& otherList) {
+	return this->m_list_size >= otherList.m_list_size;
+}
+
+
 
 std::ostream& operator<<(std::ostream& out, const LinkedList& otherList) {
 	Node* new_node = new Node;
