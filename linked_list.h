@@ -4,7 +4,6 @@
 #include <initializer_list>
 #include <ostream>
 
-template<class T*>
 class Iterator {
 public:
     explicit Iterator(T* ptr) : m_ptr(ptr) {}
@@ -43,31 +42,13 @@ private:
 };
 
 
-//typedef Iterator<LinkedList*> li;
-//typedef Iterator<const LinkedList*> const_li;
-
-
-struct Node {
-public:
-    Node(int data = 0, Node* next = nullptr, Node* prev = nullptr) {
-        this->m_data = data;
-        this->m_next = next;
-        this->m_prev = prev;
-    }
-
-    int m_data;
-    Node* m_next;
-    Node* m_prev;
-};
-
-
 class LinkedList {
 public:
-    LinkedList();  //default constructor
-    LinkedList(const LinkedList&);  //copy constructor
+    LinkedList();
+    LinkedList(const LinkedList&);
     //LinkedList(LinkedList&&);  //move constructor
     //LinkedList(const std::initializer_list<Node>&);  //parameterized constructor
-    ~LinkedList();  //destructor
+    ~LinkedList();
 
 public:
     Node* front();  //accesses the first element
@@ -89,23 +70,36 @@ public:
     void pop_front();  //removes the first element
     void pop_back();
     void print();
+    friend std::ostream& operator<<(std::ostream&, const LinkedList&);
     bool operator==(LinkedList&);
     bool operator!=(LinkedList&);
     LinkedList& operator=(LinkedList&);  //copy operator assignment
-    //LinkedList& operator=(LinkedList&&);  //move operator assignment
-    //LinkedList& operator+(LinkedList&);
-    //LinkedList& operator+=(const LinkedList&);
+    LinkedList& operator=(LinkedList&&);  //move operator assignment
+    LinkedList& operator+(LinkedList&);
+    LinkedList& operator+=(LinkedList&);
     bool operator<(LinkedList&);
     bool operator<=(LinkedList&);
     bool operator>(LinkedList&);
     bool operator>=(LinkedList&);
 
-public:
+private:
+    struct Node {
+    public:
+        Node(int data = 0, Node* next = nullptr, Node* prev = nullptr) {
+            this->m_data = data;
+            this->m_next = next;
+            this->m_prev = prev;
+        }
+
+        int m_data;
+        Node* m_next;
+        Node* m_prev;
+    };
+
+private:
     Node* m_head;
     Node* m_tail;
     int m_list_size;
 };
-
-std::ostream& operator<<(std::ostream&, const LinkedList&);
 
 #endif // !LINKED_LIST_H

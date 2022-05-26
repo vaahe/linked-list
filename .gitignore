@@ -1,2 +1,5 @@
 CppProperties.json
-.vscode
+./.vscode
+linked_list
+launch.json
+settings.json
