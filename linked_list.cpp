@@ -8,12 +8,45 @@ LinkedList::LinkedList() {
 }
 
 LinkedList::LinkedList(const LinkedList& other_list) {
-	Node* tmp = other_list.m_head;
-	Node* prev = m_head;
-	while (tmp) {
-		prev = new Node(tmp->m_data, tmp->m_next, tmp->m_prev);
-		tmp = current->m_next;
-		prev = prev->m_next;
+	//if other list is empty
+	if (other_list.m_head == nullptr) {
+		m_head = nullptr;
+	}
+	//if other list is not empty
+	else {
+		if (other_list.m_head == nullptr) {
+			m_head->m_next = nullptr;
+		}
+		else {
+			Node* tmp = other_list.m_head;
+			m_head = new Node;
+			m_tail = new Node;
+			m_head->m_prev = nullptr;
+			m_head->m_data = tmp->m_data;
+			tmp = tmp->m_next;
+			Node* tmp2 = m_head;
+
+			while (tmp != nullptr) {
+				tmp2->m_next = new Node;
+				tmp2->m_next->m_prev = tmp2;
+				tmp2 = tmp2->m_next;
+				tmp2->m_data = tmp->m_data;
+				tmp = tmp->m_next;
+			}
+
+			tmp2->m_next = nullptr;
+			m_tail = tmp2;
+		}
+	}
+
+	m_list_size = other_list.m_list_size;
+}
+
+LinkedList::LinkedList(const std::initializer_list<Node>& other_list) {
+	int count = 0;
+	for (auto& it : other_list) {
+		LinkedList::Node[count] = it;
+		++count;
 	}
 }
 
@@ -26,12 +59,20 @@ LinkedList::~LinkedList() {
 	m_list_size = 0;
 }
 
-Node* LinkedList::front() {
+LinkedList::Node* LinkedList::front() {
 	return m_head;
 }
 
-Node* LinkedList::back() {
+LinkedList::Node* LinkedList::back() {
 	return m_tail;
+}
+
+Iterator LinkedList::begin() {
+	return Iterator(&(m_head->m_data));
+}
+
+Iterator LinkedList::end() {
+	return Iterator(&(m_tail->m_data));
 }
 
 bool LinkedList::empty() {
@@ -199,14 +240,50 @@ LinkedList& LinkedList::operator=(LinkedList&& other_list) {
 
 //copy operator assignment
 LinkedList& LinkedList::operator=(LinkedList& other_list) {
-	m_head = other_list.m_head;
+	if (this != &other_list) {
+		//if list is not empty
+		if (m_head != nullptr) {
+			while (m_head) {
+				Node* tmp = m_head;
+				m_head = m_head->m_next;
+				delete tmp;
+			}
 
-	if (this == &other_list) {
-		return *this;
-	}
+			m_head = nullptr;
+			m_tail = nullptr;
+			m_list_size = 0;
+		}
 
-	while (m_head != nullptr) {
-		m_head->m_next = other_list.m_head->m_next;
+		//if other list is empty
+		if (other_list.m_head == nullptr) {
+			m_head = nullptr;
+		}
+		//if other list is not empty
+		else {
+			Node* current1 = other_list.m_head;
+			m_head->m_prev = nullptr;
+			m_head->m_data = current1->m_data;
+			current1 = current1->m_next;
+
+			if (current1 == nullptr) {
+				m_head->m_next = nullptr;
+			}
+			else {
+				Node* current2 = m_head;
+
+				while (current1 != nullptr) {
+					current2->m_next = new Node;
+					current2->m_next->m_prev = current2;
+					current2 = current2->m_next;
+
+					current2->m_data = current1->m_data;
+					current1 = current1->m_next;
+				}
+
+				current2->m_next = nullptr;
+				m_tail = current2;
+			}
+		}
 	}
 
 	return *this;
@@ -214,22 +291,23 @@ LinkedList& LinkedList::operator=(LinkedList& other_list) {
 
 LinkedList& LinkedList::operator+(LinkedList& other_list) {
 	LinkedList new_list;
-	
+
 	if (m_head == nullptr) {
 		new_list = other_list;
 	}
 	else if (other_list.m_head == nullptr) {
-		new_list = this;
+		new_list = *this;
 	}
 	else {
 		while (m_head != nullptr) {
-		Node* tmp = other_list.m_head;
-		Node* new_node = new_node.m_head;
-		new_node = m_head->m_data + other_list.m_data;
+			Node* tmp = other_list.m_head;
+			Node* new_node = new_list.m_head;
 
-		m_head = m_head->m_next;
-		tmp = tmp->m_next;
-		new_node = new_node->m_next;
+			new_node->m_data = m_head->m_data + new_node->m_data;
+
+			m_head = m_head->m_next;
+			tmp = tmp->m_next;
+			new_node = new_node->m_next;
 		}
 	}
 
@@ -238,18 +316,18 @@ LinkedList& LinkedList::operator+(LinkedList& other_list) {
 
 LinkedList& LinkedList::operator+=(LinkedList& otherList) {
 	if (m_head == nullptr) {
-		this = otherList;
+		*this = otherList;
 	}
 	else if (otherList.m_head == nullptr) {
 		return *this;
 	}
 	else {
 		while (m_head != nullptr) {
-		Node* tmp = otherList.m_head;
-		m_head->m_data += tmp->m_data;
+			Node* tmp = otherList.m_head;
+			m_head->m_data += tmp->m_data;
 
-		m_head = m_head->m_next;
-		tmp = tmp->m_next;
+			m_head = m_head->m_next;
+			tmp = tmp->m_next;
 		}
 	}
 
@@ -282,7 +360,7 @@ bool LinkedList::operator!=(LinkedList& other_list) {
 	while (new_node != nullptr) {
 		if (new_node->m_data == m_head->m_data)
 			return false;
-		
+
 		new_node = new_node->m_next;
 		m_head = m_head->m_next;
 	}
@@ -305,8 +383,9 @@ bool LinkedList::operator>=(LinkedList& other_list) {
 	return this->m_list_size >= other_list.m_list_size;
 }
 
-std::ostream& LinkedList::operator<<(std::ostream& out, const LinkedList& other_list) {
-	Node* new_node = other_list.m_head;
+std::ostream& operator<<(std::ostream& out, const LinkedList& other_list) {
+	LinkedList::Node* new_node;
+	new_node = other_list.m_head;
 
 	while (new_node != nullptr) {
 		out << new_node->m_data << " ";
@@ -314,4 +393,31 @@ std::ostream& LinkedList::operator<<(std::ostream& out, const LinkedList& other_
 	}
 
 	return out;
+}
+
+
+int LinkedList::operator[](int index) {
+	int counter = 0;
+
+	if (index <= m_list_size / 2) {
+		Node* tmp = m_head;
+		while (tmp != nullptr) {
+			if (counter == index) {
+				return tmp->m_data;
+			}
+			tmp = tmp->m_next;
+			++counter;
+		}
+	}
+	else {
+		counter = m_list_size - 1;
+		Node* tmp = m_tail;
+		while (tmp != nullptr) {
+			if (counter == index) {
+				return tmp->m_data;
+			}
+			tmp = tmp->m_prev;
+			--counter;
+		}
+	}
 }
