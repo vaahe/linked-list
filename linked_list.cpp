@@ -1,6 +1,9 @@
 #include "linked_list.h"
 #include <iostream>
 
+
+/*  Constructors and Destructor  */
+
 LinkedList::LinkedList() {
 	m_head = nullptr;
 	m_tail = nullptr;
@@ -42,22 +45,36 @@ LinkedList::LinkedList(const LinkedList& other_list) {
 	m_list_size = other_list.m_list_size;
 }
 
-LinkedList::LinkedList(const std::initializer_list<Node>& other_list) {
-	int count = 0;
-	for (auto& it : other_list) {
-		LinkedList::Node[count] = it;
-		++count;
+//move constructor
+LinkedList::LinkedList(LinkedList&& other_list) :
+	m_head(other_list.m_head),
+	m_tail(other_list.m_tail),
+	m_list_size(other_list.m_list_size) {
+	m_head = nullptr;
+	m_tail = nullptr;
+	m_list_size = 0;
+}
+
+LinkedList::LinkedList(int size) : m_list_size(size) {};
+
+LinkedList::LinkedList(const std::initializer_list<int>& other_list) : LinkedList(other_list.size()) {
+	Node* tmp = m_head;
+	for (auto it = other_list.begin(); it != other_list.end(); ++it) {
+		std::cout << *it << " ";
 	}
 }
 
 LinkedList::~LinkedList() {
 	while (m_head) {
-		Node* temp = m_head;
+		Node* tmp = m_head;
 		m_head = m_head->m_next;
-		delete temp;
+		delete tmp;
 	}
 	m_list_size = 0;
 }
+
+
+/*  Functions and Overloaded Operators  */
 
 LinkedList::Node* LinkedList::front() {
 	return m_head;
@@ -141,8 +158,8 @@ void LinkedList::resize(int new_size) {
 }
 
 void LinkedList::pop_front() {
-	Node* tmp = m_head;
 	if (m_head->m_next != nullptr) {
+		Node* tmp = m_head;
 		m_head = m_head->m_next;
 		m_head->m_prev = nullptr;
 		delete tmp;
@@ -157,8 +174,8 @@ void LinkedList::pop_front() {
 }
 
 void LinkedList::pop_back() {
-	Node* tmp = m_tail;
 	if (m_head->m_next != nullptr) {
+		Node* tmp = m_tail;
 		m_tail = m_tail->m_prev;
 		m_tail->m_next = nullptr;
 		delete tmp;
@@ -192,8 +209,13 @@ void LinkedList::unique() {
 }
 */
 void LinkedList::clear() {
+	if (m_head == nullptr) {
+		return;
+	}
+
+	Node* tmp = nullptr;
 	while (m_head) {
-		Node* tmp = m_head;
+		tmp = m_head;
 		m_head = m_head->m_next;
 		delete tmp;
 	}
@@ -205,7 +227,7 @@ void LinkedList::print() {
 		Node* current = m_head;
 
 		while (current != nullptr) {
-			std::cout << current->m_data << std::endl;
+			std::cout << current->m_data << " ";
 			current = current->m_next;
 		}
 	}
@@ -214,28 +236,22 @@ void LinkedList::print() {
 	}
 }
 
-//copy assignment operator
-/*
-LinkedList& LinkedList::operator=(LinkedList& other_list) {
-	if (&other_list == this)
-		return *this;
-	else
-		clear();
-
-	return *this;
-}
-*/
-
 //move operator assignment
 LinkedList& LinkedList::operator=(LinkedList&& other_list) {
 	if (&other_list == this) {
 		return *this;
 	}
 
-	Node* new_node = new Node;
-	new_node = other_list.m_head;
+	delete m_head;
+	delete m_tail;
 
-	return other_list;
+	m_head = other_list.m_head;
+	other_list.m_head = nullptr;
+
+	m_tail = other_list.m_tail;
+	other_list.m_tail = nullptr;
+
+	return *this;
 }
 
 //copy operator assignment
@@ -398,26 +414,89 @@ std::ostream& operator<<(std::ostream& out, const LinkedList& other_list) {
 
 int LinkedList::operator[](int index) {
 	int counter = 0;
+	Node* tmp = m_head;
 
 	if (index <= m_list_size / 2) {
-		Node* tmp = m_head;
 		while (tmp != nullptr) {
 			if (counter == index) {
 				return tmp->m_data;
 			}
 			tmp = tmp->m_next;
 			++counter;
+			return tmp->m_data;
 		}
 	}
 	else {
 		counter = m_list_size - 1;
-		Node* tmp = m_tail;
+		tmp = m_tail;
 		while (tmp != nullptr) {
 			if (counter == index) {
 				return tmp->m_data;
 			}
 			tmp = tmp->m_prev;
 			--counter;
+			return tmp->m_data;
 		}
 	}
+}
+
+void LinkedList::insert(int data, int index) {
+	if (index == 0) {
+		push_front(data);
+	}
+	else if (index < 0 || index > m_list_size + 1) {
+		std::cout << "Invalid index!";
+	}
+	else {
+		if (index < m_list_size / 2) {
+			Node* tmp = m_head;
+			for (int i = 0; i < index - 1; ++i) {
+				tmp = tmp->m_next;
+			}
+
+			Node* new_node = new Node(data, tmp->m_next, tmp);
+			tmp->m_next = new_node;
+			new_node->m_next->m_prev = new_node;
+		}
+		else {
+			Node* tmp = m_tail;
+			for (int i = m_list_size - 1; i > index - 1; --i) {
+				tmp = tmp->m_prev;
+			}
+
+			Node* new_node = new Node(data, tmp->m_next, tmp);
+			tmp->m_next = new_node;
+			if (new_node->m_next != nullptr) {
+				new_node->m_next->m_prev = new_node;
+			}
+			else {
+				m_tail = new_node;
+			}
+		}
+		++m_list_size;
+	}
+}
+
+Iterator LinkedList::emplace(Iterator it, int data) {
+	if (it == begin()) {
+		push_front(data);
+		return it;
+	}
+	else if (it == end()) {
+		push_back(data);
+		return it;
+	}
+	else {
+		Node* tmp = m_head;
+		for (auto iterator = begin(); iterator != end(); ++iterator) {
+			*it = tmp->m_data;
+			tmp = tmp->m_next;
+		}
+
+		Node* new_node = new Node(data, tmp->m_next, tmp);
+		tmp->m_next = new_node;
+		new_node->m_next->m_prev = new_node;
+	}
+
+	return it;
 }
