@@ -58,9 +58,10 @@ private:
 
 public:
     LinkedList();
+    LinkedList(int);
     LinkedList(const LinkedList&);
-    //LinkedList(LinkedList&&);  //move constructor
-    LinkedList(const std::initializer_list<Node>&);  //parameterized constructor
+    LinkedList(LinkedList&&);  //move constructor
+    LinkedList(const std::initializer_list<int>&);  //parameterized constructor
     ~LinkedList();
 
 public:
@@ -71,13 +72,13 @@ public:
     bool empty();  //checks whether a linked list container is empty or not
     int size();  //finds the number of elements
     void clear();  //removes all elements
-    //Iterator insert(Iterator, int);  //inserts the elements at any position
-    //Iterator emplace(Iterator, int);  //extends list by inserting new element at a given position
+    void insert(int, int);  //inserts the elements at any position
+    Iterator emplace(Iterator, int);  //extends list by inserting new element at a given position
     void push_back(int);  //adds element at the end
     void push_front(int);  //adds element at the beginning
     void resize(int);  //changes size
     //void splice(Iterator, LinkedList&);  //transfers elements from one linked list to another
-    //void merge(LinkedList& list);  //merges two linked lists into one
+    LinkedList& merge(LinkedList& list);  //merges two linked lists into one
     //bool remove_if(Iterator, Iterator, bool);  //removes elements fulfilling condition
     void unique();  //removes duplicate values
     void pop_front();  //removes the first element
