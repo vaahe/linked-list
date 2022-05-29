@@ -3,14 +3,15 @@
 
 
 /*  Constructors and Destructor  */
-
-LinkedList::LinkedList() {
+template <class T>
+LinkedList<T>::LinkedList() {
 	m_head = nullptr;
 	m_tail = nullptr;
 	m_list_size = 0;
 }
 
-LinkedList::LinkedList(const LinkedList& other_list) {
+template <class T>
+LinkedList<T>::LinkedList(const LinkedList<T>& other_list) {
 	//if other list is empty
 	if (other_list.m_head == nullptr) {
 		m_head = nullptr;
@@ -21,16 +22,16 @@ LinkedList::LinkedList(const LinkedList& other_list) {
 			m_head->m_next = nullptr;
 		}
 		else {
-			Node* tmp = other_list.m_head;
-			m_head = new Node;
-			m_tail = new Node;
+			Node<T>* tmp = other_list.m_head;
+			m_head = new Node<T>;
+			m_tail = new Node<T>;
 			m_head->m_prev = nullptr;
 			m_head->m_data = tmp->m_data;
 			tmp = tmp->m_next;
-			Node* tmp2 = m_head;
+			Node<T>* tmp2 = m_head;
 
 			while (tmp != nullptr) {
-				tmp2->m_next = new Node;
+				tmp2->m_next = new Node<T>;
 				tmp2->m_next->m_prev = tmp2;
 				tmp2 = tmp2->m_next;
 				tmp2->m_data = tmp->m_data;
@@ -46,7 +47,8 @@ LinkedList::LinkedList(const LinkedList& other_list) {
 }
 
 //move constructor
-LinkedList::LinkedList(LinkedList&& other_list) :
+template <class T>
+LinkedList<T>::LinkedList(LinkedList<T>&& other_list) :
 	m_head(other_list.m_head),
 	m_tail(other_list.m_tail),
 	m_list_size(other_list.m_list_size) {
@@ -55,18 +57,23 @@ LinkedList::LinkedList(LinkedList&& other_list) :
 	m_list_size = 0;
 }
 
-LinkedList::LinkedList(int size) : m_list_size(size) {};
+template <class T>
+LinkedList<T>::LinkedList(int size) : m_list_size(size) {
+	m_head = nullptr;
+	m_tail = nullptr;
+};
 
-LinkedList::LinkedList(const std::initializer_list<int>& other_list) : LinkedList(other_list.size()) {
-	Node* tmp = m_head;
+template <class T>
+LinkedList<T>::LinkedList(const std::initializer_list<T>& other_list) : LinkedList<T>(other_list.size()) {
 	for (auto it = other_list.begin(); it != other_list.end(); ++it) {
-		std::cout << *it << " ";
+		std::cout << "initializer_list works here: " << *it << " ";
 	}
 }
 
-LinkedList::~LinkedList() {
+template <class T>
+LinkedList<T>::~LinkedList() {
 	while (m_head) {
-		Node* tmp = m_head;
+		Node<T>* tmp = m_head;
 		m_head = m_head->m_next;
 		delete tmp;
 	}
@@ -76,35 +83,42 @@ LinkedList::~LinkedList() {
 
 /*  Functions and Overloaded Operators  */
 
-LinkedList::Node* LinkedList::front() {
+template <class T>
+LinkedList<T>::Node<T>* LinkedList<T>::front() {
 	return m_head;
-}
+}						
 
-LinkedList::Node* LinkedList::back() {
+template <class T>
+LinkedList<T>::Node<T>* LinkedList<T>::back() {
 	return m_tail;
 }
 
-Iterator LinkedList::begin() {
-	return Iterator(&(m_head->m_data));
+template <class T>
+Iterator<T> LinkedList<T>::begin() {
+	return Iterator<T>(&(m_head->m_data));
 }
 
-Iterator LinkedList::end() {
-	return Iterator(&(m_tail->m_data));
+template <class T>
+Iterator<T> LinkedList<T>::end() {
+	return Iterator<T>(&(m_tail->m_data));
 }
 
-bool LinkedList::empty() {
+template <class T>
+bool LinkedList<T>::empty() {
 	if (m_list_size == 0) {
 		return true;
 	}
 	return false;
 }
 
-int LinkedList::size() {
+template <class T>
+int LinkedList<T>::size() {
 	return m_list_size;
 }
 
-void LinkedList::push_front(int data) {
-	Node* new_node = new Node;
+template <class T>
+void LinkedList<T>::push_front(T data) {
+	Node<T>* new_node = new Node<T>;
 	new_node->m_data = data;
 
 	new_node->m_next = m_head;
@@ -121,8 +135,9 @@ void LinkedList::push_front(int data) {
 	++m_list_size;
 }
 
-void LinkedList::push_back(int data) {
-	Node* new_node = new Node;
+template <class T>
+void LinkedList<T>::push_back(T data) {
+	Node<T>* new_node = new Node<T>;
 	new_node->m_data = data;
 
 	new_node->m_prev = m_tail;
@@ -139,7 +154,8 @@ void LinkedList::push_back(int data) {
 	++m_list_size;
 }
 
-void LinkedList::resize(int new_size) {
+template <class T>
+void LinkedList<T>::resize(int new_size) {
 	if (new_size < m_list_size) {
 		while (new_size != m_list_size) {
 			pop_back();
@@ -157,9 +173,10 @@ void LinkedList::resize(int new_size) {
 	m_list_size = new_size;
 }
 
-void LinkedList::pop_front() {
+template <class T>
+void LinkedList<T>::pop_front() {
 	if (m_head->m_next != nullptr) {
-		Node* tmp = m_head;
+		Node<T>* tmp = m_head;
 		m_head = m_head->m_next;
 		m_head->m_prev = nullptr;
 		delete tmp;
@@ -173,9 +190,10 @@ void LinkedList::pop_front() {
 	--m_list_size;
 }
 
-void LinkedList::pop_back() {
+template <class T>
+void LinkedList<T>::pop_back() {
 	if (m_head->m_next != nullptr) {
-		Node* tmp = m_tail;
+		Node<T>* tmp = m_tail;
 		m_tail = m_tail->m_prev;
 		m_tail->m_next = nullptr;
 		delete tmp;
@@ -188,32 +206,38 @@ void LinkedList::pop_back() {
 
 	--m_list_size;
 }
-/*
-void LinkedList::unique() {
-	Node* current_node = m_head;
-	Node* last_node = m_head;
-	if (m_head->m_next == nullptr)
-		current_node = nullptr;
 
-	for (;;) {
-		current_node = current_node->m_next;
-		if (current_node == nullptr) break;
+template <class T>
+void LinkedList<T>::unique() {
+	Node<T>* tmp1 = new Node<T>;
+	Node<T>* tmp2 = new Node<T>;
+	Node<T>* dup = new Node<T>;
 
-		if (last_node->m_data == current_node->m_data) {
-			delete last_node;
+	tmp1 = m_head;
+
+	while (tmp1 != nullptr) {
+		tmp2 = tmp1;
+		while (tmp2->m_next != nullptr) {
+			if (tmp1->m_data == tmp2->m_next->m_data) {
+				dup = tmp2->m_next;
+				tmp2->m_next = tmp2->m_next->m_next;
+				delete dup;
+			}
+			else {
+				tmp2 = tmp2->m_next;
+			}
 		}
-		else {
-			last_node = last_node->m_next;
-		}
+		tmp1 = tmp1->m_next;
 	}
 }
-*/
-void LinkedList::clear() {
+
+template <class T>
+void LinkedList<T>::clear() {
 	if (m_head == nullptr) {
 		return;
 	}
 
-	Node* tmp = nullptr;
+	Node<T>* tmp = nullptr;
 	while (m_head) {
 		tmp = m_head;
 		m_head = m_head->m_next;
@@ -222,9 +246,10 @@ void LinkedList::clear() {
 	m_list_size = 0;
 }
 
-void LinkedList::print() {
+template <class T>
+void LinkedList<T>::print() {
 	if (m_head != nullptr) {
-		Node* current = m_head;
+		Node<T>* current = m_head;
 
 		while (current != nullptr) {
 			std::cout << current->m_data << " ";
@@ -237,7 +262,8 @@ void LinkedList::print() {
 }
 
 //move operator assignment
-LinkedList& LinkedList::operator=(LinkedList&& other_list) {
+template <class T>
+LinkedList<T>& LinkedList<T>::operator=(LinkedList<T>&& other_list) {
 	if (&other_list == this) {
 		return *this;
 	}
@@ -255,12 +281,13 @@ LinkedList& LinkedList::operator=(LinkedList&& other_list) {
 }
 
 //copy operator assignment
-LinkedList& LinkedList::operator=(LinkedList& other_list) {
+template <class T>
+LinkedList<T>& LinkedList<T>::operator=(LinkedList<T>& other_list) {
 	if (this != &other_list) {
 		//if list is not empty
 		if (m_head != nullptr) {
 			while (m_head) {
-				Node* tmp = m_head;
+				Node<T>* tmp = m_head;
 				m_head = m_head->m_next;
 				delete tmp;
 			}
@@ -276,7 +303,7 @@ LinkedList& LinkedList::operator=(LinkedList& other_list) {
 		}
 		//if other list is not empty
 		else {
-			Node* current1 = other_list.m_head;
+			Node<T>* current1 = other_list.m_head;
 			m_head->m_prev = nullptr;
 			m_head->m_data = current1->m_data;
 			current1 = current1->m_next;
@@ -285,7 +312,7 @@ LinkedList& LinkedList::operator=(LinkedList& other_list) {
 				m_head->m_next = nullptr;
 			}
 			else {
-				Node* current2 = m_head;
+				Node<T>* current2 = m_head;
 
 				while (current1 != nullptr) {
 					current2->m_next = new Node;
@@ -305,8 +332,9 @@ LinkedList& LinkedList::operator=(LinkedList& other_list) {
 	return *this;
 }
 
-LinkedList& LinkedList::operator+(LinkedList& other_list) {
-	LinkedList new_list;
+template <class T>
+LinkedList<T>& LinkedList<T>::operator+(LinkedList<T>& other_list) {
+	LinkedList<T> new_list;
 
 	if (m_head == nullptr) {
 		new_list = other_list;
@@ -316,8 +344,8 @@ LinkedList& LinkedList::operator+(LinkedList& other_list) {
 	}
 	else {
 		while (m_head != nullptr) {
-			Node* tmp = other_list.m_head;
-			Node* new_node = new_list.m_head;
+			Node<T>* tmp = other_list.m_head;
+			Node<T>* new_node = new_list.m_head;
 
 			new_node->m_data = m_head->m_data + new_node->m_data;
 
@@ -330,7 +358,8 @@ LinkedList& LinkedList::operator+(LinkedList& other_list) {
 	return new_list;
 }
 
-LinkedList& LinkedList::operator+=(LinkedList& otherList) {
+template <class T>
+LinkedList<T>& LinkedList<T>::operator+=(LinkedList<T>& otherList) {
 	if (m_head == nullptr) {
 		*this = otherList;
 	}
@@ -339,7 +368,7 @@ LinkedList& LinkedList::operator+=(LinkedList& otherList) {
 	}
 	else {
 		while (m_head != nullptr) {
-			Node* tmp = otherList.m_head;
+			Node<T>* tmp = otherList.m_head;
 			m_head->m_data += tmp->m_data;
 
 			m_head = m_head->m_next;
@@ -350,12 +379,13 @@ LinkedList& LinkedList::operator+=(LinkedList& otherList) {
 	return *this;
 }
 
-bool LinkedList::operator==(LinkedList& other_list) {
+template <class T>
+bool LinkedList<T>::operator==(LinkedList<T>& other_list) {
 	if (m_head == nullptr && other_list.m_head == nullptr) {
 		return true;
 	}
 
-	Node* new_node = other_list.m_head;
+	Node<T>* new_node = other_list.m_head;
 	while (new_node != nullptr) {
 		if (new_node->m_data != m_head->m_data) {
 			return false;
@@ -367,12 +397,13 @@ bool LinkedList::operator==(LinkedList& other_list) {
 	return true;
 }
 
-bool LinkedList::operator!=(LinkedList& other_list) {
+template <class T>
+bool LinkedList<T>::operator!=(LinkedList<T>& other_list) {
 	if (m_head == nullptr && other_list.m_head == nullptr) {
 		return false;
 	}
 
-	Node* new_node = other_list.m_head;
+	Node<T>* new_node = other_list.m_head;
 	while (new_node != nullptr) {
 		if (new_node->m_data == m_head->m_data)
 			return false;
@@ -383,24 +414,29 @@ bool LinkedList::operator!=(LinkedList& other_list) {
 	return true;
 }
 
-bool LinkedList::operator<(LinkedList& other_list) {
+template <class T>
+bool LinkedList<T>::operator<(LinkedList<T>& other_list) {
 	return this->m_list_size < other_list.m_list_size;
 }
 
-bool LinkedList::operator<=(LinkedList& other_list) {
+template <class T>
+bool LinkedList<T>::operator<=(LinkedList<T>& other_list) {
 	return this->m_list_size <= other_list.m_list_size;
 }
 
-bool LinkedList::operator>(LinkedList& other_list) {
+template <class T>
+bool LinkedList<T>::operator>(LinkedList<T>& other_list) {
 	return this->m_list_size > other_list.m_list_size;
 }
 
-bool LinkedList::operator>=(LinkedList& other_list) {
+template <class T>
+bool LinkedList<T>::operator>=(LinkedList<T>& other_list) {
 	return this->m_list_size >= other_list.m_list_size;
 }
 
-std::ostream& operator<<(std::ostream& out, const LinkedList& other_list) {
-	LinkedList::Node* new_node;
+template <typename T>
+std::ostream& operator<<(std::ostream& out, const LinkedList<T>& other_list) {
+	typename LinkedList<T>::Node* new_node;
 	new_node = other_list.m_head;
 
 	while (new_node != nullptr) {
@@ -411,10 +447,10 @@ std::ostream& operator<<(std::ostream& out, const LinkedList& other_list) {
 	return out;
 }
 
-
-int LinkedList::operator[](int index) {
+template <class T>
+T& LinkedList<T>::operator[](int index) {
 	int counter = 0;
-	Node* tmp = m_head;
+	Node<T>* tmp = m_head;
 
 	if (index <= m_list_size / 2) {
 		while (tmp != nullptr) {
@@ -426,21 +462,21 @@ int LinkedList::operator[](int index) {
 			return tmp->m_data;
 		}
 	}
-	else {
-		counter = m_list_size - 1;
-		tmp = m_tail;
-		while (tmp != nullptr) {
-			if (counter == index) {
-				return tmp->m_data;
-			}
-			tmp = tmp->m_prev;
-			--counter;
+
+	counter = m_list_size - 1;
+	tmp = m_tail;
+	while (tmp != nullptr) {
+		if (counter == index) {
 			return tmp->m_data;
 		}
+		tmp = tmp->m_prev;
+		--counter;
+		return tmp->m_data;
 	}
 }
 
-void LinkedList::insert(int data, int index) {
+template <class T>
+void LinkedList<T>::insert(T data, int index) {
 	if (index == 0) {
 		push_front(data);
 	}
@@ -449,22 +485,22 @@ void LinkedList::insert(int data, int index) {
 	}
 	else {
 		if (index < m_list_size / 2) {
-			Node* tmp = m_head;
+			Node<T>* tmp = m_head;
 			for (int i = 0; i < index - 1; ++i) {
 				tmp = tmp->m_next;
 			}
 
-			Node* new_node = new Node(data, tmp->m_next, tmp);
+			Node<T>* new_node = new Node<T>(data, tmp->m_next, tmp);
 			tmp->m_next = new_node;
 			new_node->m_next->m_prev = new_node;
 		}
 		else {
-			Node* tmp = m_tail;
+			Node<T>* tmp = m_tail;
 			for (int i = m_list_size - 1; i > index - 1; --i) {
 				tmp = tmp->m_prev;
 			}
 
-			Node* new_node = new Node(data, tmp->m_next, tmp);
+			Node<T>* new_node = new Node(data, tmp->m_next, tmp);
 			tmp->m_next = new_node;
 			if (new_node->m_next != nullptr) {
 				new_node->m_next->m_prev = new_node;
@@ -477,7 +513,8 @@ void LinkedList::insert(int data, int index) {
 	}
 }
 
-Iterator LinkedList::emplace(Iterator it, int data) {
+template <class T>
+Iterator<T> LinkedList<T>::emplace(Iterator<T> it, T data) {
 	if (it == begin()) {
 		push_front(data);
 		return it;
@@ -487,16 +524,45 @@ Iterator LinkedList::emplace(Iterator it, int data) {
 		return it;
 	}
 	else {
-		Node* tmp = m_head;
+		Node<T>* tmp = m_head;
 		for (auto iterator = begin(); iterator != end(); ++iterator) {
 			*it = tmp->m_data;
 			tmp = tmp->m_next;
 		}
 
-		Node* new_node = new Node(data, tmp->m_next, tmp);
+		Node<T>* new_node = new Node<T>(data, tmp->m_next, tmp);
 		tmp->m_next = new_node;
 		new_node->m_next->m_prev = new_node;
 	}
 
 	return it;
+}
+
+template <class T>
+void LinkedList<T>::splice(Iterator<T> it, LinkedList<T>& other_list) {
+	if (it == begin()) {
+		Node<T>* tmp = other_list.m_tail;
+		while (tmp) {
+			push_front(tmp->m_data);
+			tmp = tmp->m_prev;
+		}
+	}
+	else if (it == end()) {
+		Node<T>* tmp = other_list.m_head;
+		while (tmp) {
+			push_back(tmp->m_data);
+			tmp = tmp->m_next;
+		}
+	}
+}
+
+template <class T>
+LinkedList<T>& LinkedList<T>::merge(LinkedList<T>& other_list) {
+	if (this == &other_list) {
+		return;
+	}
+
+	m_tail->m_next = other_list->m_head;
+
+	return *this;
 }
