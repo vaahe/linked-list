@@ -4,47 +4,48 @@
 #include <initializer_list>
 #include <ostream>
 
-template<class T>
-class Iterator {
-public:
-    explicit Iterator(T* ptr) : m_ptr(ptr) {}
-    //keyword 'explicit' is used to mark constructor to not implicitly convert types
-
-    T& operator*() const {
-        return *m_ptr;
-    }
-
-    T* operator->() const {
-        return m_ptr;
-    }
-
-    Iterator<T>& operator++()
-    {
-        ++m_ptr;
-        return *this;
-    }
-
-    Iterator<T>& operator--() {
-        --m_ptr;
-        return *this;
-    }
-
-    bool operator==(const Iterator<T>& other) {
-        return this->m_ptr == other.m_ptr;
-    }
-
-    bool operator!=(const Iterator<T>& other)
-    {
-        return this->m_ptr != other.m_ptr;
-    }
-private:
-    T* m_ptr;
-};
 
 template <class T>
 class LinkedList {
+public:
+    template <typename>
+    class Iterator {
+    public:
+        explicit Iterator(T* ptr) : m_ptr(ptr) {}
+        //keyword 'explicit' is used to mark constructor to not implicitly convert types
+
+        T& operator*() const {
+            return *m_ptr;
+        }
+
+        T* operator->() const {
+            return m_ptr;
+        }
+
+        Iterator<T>& operator++()
+        {
+            ++m_ptr;
+            return *this;
+        }
+
+        Iterator<T>& operator--() {
+            --m_ptr;
+            return *this;
+        }
+
+        bool operator==(const Iterator<T>& other) {
+            return this->m_ptr == other.m_ptr;
+        }
+
+        bool operator!=(const Iterator<T>& other)
+        {
+            return this->m_ptr != other.m_ptr;
+        }
+    private:
+        T* m_ptr;
+    };
 private:
-    template <class T>
+    template <typename>
     struct Node {
     public:
         Node(T data = T(), Node<T>* next = nullptr, Node<T>* prev = nullptr) {
