@@ -106,4 +106,6 @@ private:
     int m_list_size;
 };
 
+#include "linked_list.hpp"
+
 #endif // !LINKED_LIST_H
