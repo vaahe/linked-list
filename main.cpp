@@ -1,7 +1,5 @@
 #include "linked_list.h"
-#include "linked_list.cpp"
 #include <iostream>
-
 
 
 int main() {
@@ -51,11 +49,11 @@ int main() {
 
 
 	LinkedList<int> list6 = { 1,2,3,4 };
+	std::cout << std::endl;
 	LinkedList<int> list7 = { 1,1,4 };
 	bool state = list6 > list7;
 	std::cout << std::endl;
 	std::cout << state;
-	
 
 	return 0;
 }
