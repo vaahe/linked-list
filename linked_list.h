@@ -3,7 +3,6 @@
 
 #include <initializer_list>
 #include <iostream>
-#include <utility>
 
 template <class T>
 class LinkedList {
@@ -97,23 +96,25 @@ public:
     void unique();  //removes duplicate values
     void pop_front();  //removes the first element
     void pop_back();
-    void print();
     friend std::ostream& operator<<(std::ostream&, const LinkedList<T>&);
-    bool operator==(const LinkedList<T>&);
-    bool operator!=(const LinkedList<T>&);
+    bool operator==(LinkedList<T>&);
+    bool operator!=(LinkedList<T>&);
     LinkedList<T>& operator=(const LinkedList<T>&);  //copy operator assignment
     LinkedList<T>& operator=(LinkedList<T>&&);  //move operator assignment
     LinkedList<T>& operator+(LinkedList<T>&);
     LinkedList<T>& operator+=(const LinkedList<T>&);
-    bool operator<(const LinkedList<T>&);
-    bool operator<=(const LinkedList<T>&);
-    bool operator>(const LinkedList<T>&);
-    bool operator>=(const LinkedList<T>&);
+    bool operator<(LinkedList<T>&);
+    bool operator<=(LinkedList<T>&);
+    bool operator>(LinkedList<T>&);
+    bool operator>=(LinkedList<T>&);
 
 private:
     Node<T>* m_head;
     Node<T>* m_tail;
     int m_size;
+
+private:  //helper functions
+    T sum();
 };
 
 #include "linked_list.hpp"

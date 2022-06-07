@@ -12,27 +12,29 @@ LinkedList<T>::LinkedList(const LinkedList<T>& other_list) {
 	Node<T>* tmp2 = nullptr;
 
 	if (other_list.m_head == nullptr) {
-		Node<T> node;
+		m_head = nullptr;
+		m_tail = nullptr;
+		m_size = 0;
 	}
 	else {
-			tmp = other_list.m_head;
-			m_head = new Node<T>;
-			m_tail = new Node<T>;
-			m_head->m_prev = nullptr;
-			m_head->m_data = tmp->m_data;
+		tmp = other_list.m_head;
+		m_head = new Node<T>;
+		m_tail = new Node<T>;
+		m_head->m_prev = nullptr;
+		m_head->m_data = tmp->m_data;
+		tmp = tmp->m_next;
+		tmp2 = m_head;
+
+		while (tmp != nullptr) {
+			tmp2->m_next = new Node<T>;
+			tmp2->m_next->m_prev = tmp2;
+			tmp2 = tmp2->m_next;
+			tmp2->m_data = tmp->m_data;
 			tmp = tmp->m_next;
-			tmp2 = m_head;
+		}
 
-			while (tmp != nullptr) {
-				tmp2->m_next = new Node<T>;
-				tmp2->m_next->m_prev = tmp2;
-				tmp2 = tmp2->m_next;
-				tmp2->m_data = tmp->m_data;
-				tmp = tmp->m_next;
-			}
-
-			tmp2->m_next = nullptr;
-			m_tail = tmp2;
+		tmp2->m_next = nullptr;
+		m_tail = tmp2;
 	}
 
 	m_size = other_list.m_size;
@@ -49,7 +51,6 @@ LinkedList<T>::LinkedList(LinkedList<T>&& other_list) :
 	m_size = 0;
 }
 
-
 template <class T>
 LinkedList<T>::LinkedList(const std::initializer_list<T>& other_list) {
 	std::cout << "initializer_list works here: ";
@@ -60,8 +61,9 @@ LinkedList<T>::LinkedList(const std::initializer_list<T>& other_list) {
 
 template <class T>
 LinkedList<T>::~LinkedList() {
+	Node<T>* tmp = nullptr;
 	while (m_head) {
-		Node<T>* tmp = m_head;
+		tmp = m_head;
 		m_head = m_head->m_next;
 		delete tmp;
 	}
@@ -135,22 +137,6 @@ void LinkedList<T>::push_back(T data) {
 }
 
 template <class T>
-void LinkedList<T>::print() {
-	if (m_head != nullptr) {
-		Node<T>* current = m_head;
-
-		while (current != nullptr) {
-			std::cout << current->m_data << " ";
-			current = current->m_next;
-		}
-	}
-	else {
-		std::cout << "List is empty!\n";
-	}
-}
-
-
-template <class T>
 void LinkedList<T>::resize(int new_size) {
 	if (new_size < m_size) {
 		while (new_size != m_size) {
@@ -203,7 +189,6 @@ void LinkedList<T>::pop_back() {
 	--m_size;
 }
 
-
 template <class T>
 void LinkedList<T>::unique() {
 	Node<T>* tmp1 = m_head;
@@ -240,7 +225,6 @@ void LinkedList<T>::clear() {
 	}
 	m_size = 0;
 }
-
 
 //move operator assignment
 template <class T>
@@ -315,7 +299,6 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& other_list) {
 
 	return *this;
 }
-
 
 template <class T>
 LinkedList<T>& LinkedList<T>::operator+(LinkedList<T>& other_list) {
@@ -408,151 +391,49 @@ LinkedList<T>& LinkedList<T>::operator+=(const LinkedList<T>& other_list) {
 }
 
 template <class T>
-bool LinkedList<T>::operator==(const LinkedList<T>& other_list) {
-	if (m_head == nullptr && other_list.m_head == nullptr) {
-		return true;
-	}
-
-	T sum1 = T();
-	T sum2 = T();
-
-	Node<T>* tmp1 = m_head;
-	Node<T>* tmp2 = other_list.m_head;
-
-	while (tmp1 != nullptr) {
-		sum1 += tmp1->m_data;
-		tmp1 = tmp1->m_next;
-	}
-
-	while (tmp2 != nullptr) {
-		sum2 += tmp1->m_data;
-		tmp2 = tmp2->m_next;
-	}
+bool LinkedList<T>::operator==(LinkedList<T>& other_list) {
+	T sum1 = this->sum();
+	T sum2 = other_list.sum();
 
 	return sum1 == sum2;
 }
 
 template <class T>
-bool LinkedList<T>::operator!=(const LinkedList<T>& other_list) {
-	if (m_head == nullptr && other_list.m_head == nullptr) {
-		return false;
-	}
-
-	T sum1 = T();
-	T sum2 = T();
-
-	Node<T>* tmp1 = m_head;
-	Node<T>* tmp2 = other_list.m_head;
-
-	while (tmp1 != nullptr) {
-		sum1 += tmp1->m_data;
-		tmp1 = tmp1->m_next;
-	}
-
-	while (tmp2 != nullptr) {
-		sum2 += tmp1->m_data;
-		tmp2 = tmp2->m_next;
-	}
+bool LinkedList<T>::operator!=(LinkedList<T>& other_list) {
+	T sum1 = this->sum();
+	T sum2 = other_list.sum();
 
 	return sum1 != sum2;
 }
 
 template <class T>
-bool LinkedList<T>::operator<(const LinkedList<T>& other_list) {
-	if (m_head == nullptr && other_list.m_head == nullptr) {
-		return false;
-	}
-
-	T sum1 = T();
-	T sum2 = T();
-
-	Node<T>* tmp1 = m_head;
-	Node<T>* tmp2 = other_list.m_head;
-
-	while (tmp1) {
-		sum1 += tmp1->m_data;
-		tmp1 = tmp1->m_next;
-	}
-
-	while (tmp2) {
-		sum2 += tmp1->m_data;
-		tmp2 = tmp2->m_next;
-	}
+bool LinkedList<T>::operator<(LinkedList<T>& other_list) {
+	T sum1 = this->sum();
+	T sum2 = other_list.sum();
 
 	return sum1 < sum2;
 }
 
 template <class T>
-bool LinkedList<T>::operator<=(const LinkedList<T>& other_list) {
-	if (m_head == nullptr && other_list.m_head == nullptr) {
-		return true;
-	}
-
-	T sum1 = T();
-	T sum2 = T();
-
-	Node<T>* tmp1 = m_head;
-	Node<T>* tmp2 = other_list.m_head;
-
-	while (tmp1 != nullptr) {
-		sum1 += tmp1->m_data;
-		tmp1 = tmp1->m_next;
-	}
-
-	while (tmp2 != nullptr) {
-		sum2 += tmp1->m_data;
-		tmp2 = tmp2->m_next;
-	}
+bool LinkedList<T>::operator<=(LinkedList<T>& other_list) {
+	T sum1 = this->sum();
+	T sum2 = other_list.sum();
 
 	return sum1 <= sum2;
 }
 
 template <class T>
-bool LinkedList<T>::operator>(const LinkedList<T>& other_list) {
-	if (m_head == nullptr && other_list.m_head == nullptr) {
-		return false;
-	}
-
-	T sum1 = T();
-	T sum2 = T();
-
-	Node<T>* tmp1 = m_head;
-	Node<T>* tmp2 = other_list.m_head;
-
-	while (tmp1 != nullptr) {
-		sum1 += tmp1->m_data;
-		tmp1 = tmp1->m_next;
-	}
-
-	while (tmp2 != nullptr) {
-		sum2 += tmp1->m_data;
-		tmp2 = tmp2->m_next;
-	}
+bool LinkedList<T>::operator>(LinkedList<T>& other_list) {
+	T sum1 = this->sum();
+	T sum2 = other_list.sum();
 
 	return sum1 > sum2;
 }
 
 template <class T>
-bool LinkedList<T>::operator>=(const LinkedList<T>& other_list) {
-	if (m_head == nullptr && other_list.m_head == nullptr) {
-		return true;
-	}
-
-	T sum1 = T();
-	T sum2 = T();
-
-	Node<T>* tmp1 = m_head;
-	Node<T>* tmp2 = other_list.m_head;
-
-	while (tmp1 != nullptr) {
-		sum1 += tmp1->m_data;
-		tmp1 = tmp1->m_next;
-	}
-
-	while (tmp2 != nullptr) {
-		sum2 += tmp1->m_data;
-		tmp2 = tmp2->m_next;
-	}
+bool LinkedList<T>::operator>=(LinkedList<T>& other_list) {
+	T sum1 = this->sum();
+	T sum2 = other_list.sum();
 
 	return sum1 >= sum2;
 }
@@ -568,7 +449,6 @@ std::ostream& operator<<(std::ostream& out, const LinkedList<T>& other_list) {
 
 	return out;
 }
-
 
 template <class T>
 LinkedList<T>::Node<T> LinkedList<T>::insert(Node<T>* node, const T& data) {
@@ -636,4 +516,20 @@ LinkedList<T>& LinkedList<T>::merge(LinkedList<T>& other_list) {
 	}
 
 	return *this;
+}
+
+template <class T>
+T LinkedList<T>::sum() {
+	if (m_head == nullptr) {
+		return true;
+	}
+
+	T result = T();
+
+	while (m_head) {
+		result += m_head->m_data;
+		m_head = m_head->m_next;
+	}
+
+	return result;
 }

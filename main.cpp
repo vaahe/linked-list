@@ -15,7 +15,17 @@ int main() {
 	list2.push_front(1);
 	list2.push_front(2);
 	list2.push_front(7);
+	std::cout << "list2: " << list2 << std::endl;
 
+
+	std::cout << std::boolalpha << (list >= list2) << std::endl;
+	std::cout << std::boolalpha << (list <= list2) << std::endl;
+	std::cout << std::boolalpha << (list > list2) << std::endl;
+	std::cout << std::boolalpha << (list < list2) << std::endl;
+	std::cout << std::boolalpha << (list != list2) << std::endl;
+	std::cout << std::boolalpha << (list == list2) << std::endl;
+
+	
 	list.merge(list2);
 	list.splice(list.end(), list2);
 	auto it = list.emplace(list.begin(), 41);
@@ -53,7 +63,6 @@ int main() {
 	LinkedList<int> list6 = { 1,2,3 };
 	std::cout << std::endl;
 	LinkedList<int> list7 = { 11,1,4 };
-	std::cout << std::endl;
-	std::cout<<list6.operator==(list7);
+	
 	return 0;
 }
