@@ -5,36 +5,41 @@
 #include <iostream>
 
 template <class T>
+class LinkedList;
+
+template <class T>
+std::ostream& operator<<(std::ostream&, LinkedList<T>&) ;
+
+template <class T>
 class LinkedList {
-public:
-    class Iterator {
-    public:
-        explicit Iterator(T* ptr);
-        T& operator*() const;
-        T* operator->() const;
-        Iterator& operator++();
-        Iterator& operator++(int);
-        Iterator& operator--();
-        Iterator& operator--(int);
-        bool operator==(const Iterator& other);
-        bool operator!=(const Iterator& other);
     private:
-        T* m_ptr;
-        friend class LinkedList<T>;
-    };
-private:
     struct Node {
     public:
-        Node(T data = T(), Node* next = nullptr, Node* prev = nullptr) {
-            m_data = data;
-            m_next = next;
-            m_prev = prev;
-        }
+        Node(T data = T(), Node* next = nullptr, Node* prev = nullptr) :
+         m_next(next),
+         m_prev(prev),
+         m_data(data) {}
 
         T m_data;
         Node* m_next;
         Node* m_prev;
     };
+public:
+    class Iterator {
+    public:
+         Iterator(Node* ptr);
+        T& operator*() const;
+        Node* operator->() const;
+        Iterator& operator++();
+        Iterator& operator++(int);
+        Iterator& operator--();
+        Iterator& operator--(int);
+        bool operator==(const Iterator &other) const;
+        bool operator!=(const Iterator &other)const;
+    private:
+        Node* m_ptr;
+    };
+
 
 public:
     LinkedList();
@@ -61,7 +66,8 @@ public:
     void unique();  //removes duplicate values
     void pop_front();  //removes the first element
     void pop_back();
-    friend std::ostream& operator<<(std::ostream&, const LinkedList<T>&);
+    template<typename>
+    friend std::ostream& operator<<(std::ostream&, LinkedList<T>&);
     bool operator==(LinkedList<T>&);
     bool operator!=(LinkedList<T>&);
     LinkedList<T>& operator=(const LinkedList<T>&);  //copy operator assignment
@@ -82,6 +88,7 @@ private:
     T sum();
     void print();
 };
+
 
 #include "linked_list.hpp"
 
