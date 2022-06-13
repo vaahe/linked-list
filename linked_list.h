@@ -26,8 +26,13 @@ class LinkedList {
     };
 public:
     class Iterator {
+        typedef Node* pointer;
+        typedef Node& reference;
+        typedef T type;
+        typedef ptrdiff_t difference_type;
+
     public:
-         Iterator(Node* ptr);
+        Iterator(Node* ptr);
         T& operator*() const;
         Node* operator->() const;
         Iterator& operator++();
