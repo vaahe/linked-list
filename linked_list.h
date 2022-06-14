@@ -9,19 +9,25 @@ class LinkedList {
 public:
     class Iterator {
     public:
+        using value_type = T;
+        using reference = T&;
+        using pointer = T*;
+
+    public:
         explicit Iterator(T* ptr);
-        T& operator*() const;
-        T* operator->() const;
+        reference operator*() const;
+        pointer operator->() const;
         Iterator& operator++();
         Iterator& operator++(int);
         Iterator& operator--();
         Iterator& operator--(int);
         bool operator==(const Iterator& other);
         bool operator!=(const Iterator& other);
+
     private:
         T* m_ptr;
-        friend class LinkedList<T>;
     };
+
 private:
     struct Node {
     public:

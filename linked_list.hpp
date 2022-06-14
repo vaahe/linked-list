@@ -1,15 +1,13 @@
-#include "linked_list.h"
-
 template <class T>
 LinkedList<T>::Iterator::Iterator(T* ptr) : m_ptr(ptr) {}
 
 template <class T>
-T& LinkedList<T>::Iterator::operator*() const {
+typename LinkedList<T>::Iterator::reference LinkedList<T>::Iterator::operator*() const {
 	return *m_ptr;
 }
 
 template <class T>
-T* LinkedList<T>::Iterator::operator->() const {
+typename LinkedList<T>::Iterator::pointer LinkedList<T>::Iterator::operator->() const {
 	return m_ptr;
 }
 
@@ -114,6 +112,7 @@ LinkedList<T>::~LinkedList() {
 	}
 	m_size = 0;
 }
+
 
 /*  Functions and Overloaded Operators  */
 
@@ -288,12 +287,7 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& other_list) {
 	}
 
 	if (m_head != nullptr) {
-		Node* tmp = nullptr;
-		while (m_head) {
-			tmp = m_head;
-			m_head = m_head->m_next;
-			delete tmp;
-		}
+		clear();
 	}
 
 	if (other_list.m_head == nullptr) {
