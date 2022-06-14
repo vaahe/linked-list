@@ -29,7 +29,7 @@ int main() {
 	list.splice(list.end(), list2);
 	auto it = list.emplace(list.begin(), 41);
 	list.insert(list.front(), 110);
-	std::cout << "Iterator: " << *it << std::endl;
+	std::cout << *it << std::endl;
 
 	
 	std::cout << "\nMove constructor works here: ";
