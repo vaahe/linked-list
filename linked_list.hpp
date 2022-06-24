@@ -7,7 +7,7 @@ typename LinkedList<T>::Iterator::reference LinkedList<T>::Iterator::operator*()
 }
 
 template <class T>
-typename LinkedList<T>::Node* LinkedList<T>::Iterator::operator->() const {
+typename LinkedList<T>::Iterator::pointer LinkedList<T>::Iterator::operator->() const {
 	return m_ptr;
 }
 
@@ -19,7 +19,7 @@ typename LinkedList<T>::Iterator& LinkedList<T>::Iterator::operator++() {
 
 template <class T>
 typename LinkedList<T>::Iterator& LinkedList<T>::Iterator::operator++(int) {
-	Iterator* tmp = *this;
+	Iterator tmp = *this;
 	++(*this);
 	return tmp;
 }
@@ -100,6 +100,8 @@ LinkedList<T>::LinkedList(const std::initializer_list<T>& other_list) {
 	for (auto it = other_list.begin(); it != other_list.end(); ++it) {
 		std::cout << *it << " ";
 	}
+
+	m_size = other_list.size();
 }
 
 template <class T>
@@ -117,23 +119,23 @@ LinkedList<T>::~LinkedList() {
 /*  Functions and Overloaded Operators  */
 
 template <class T>
-typename LinkedList<T>::Node* LinkedList<T>::front() {
+typename LinkedList<T>::Node* LinkedList<T>::front() const {
 	return m_head;
 }
 
 template <class T>
-typename LinkedList<T>::Node* LinkedList<T>::back() {
+typename LinkedList<T>::Node* LinkedList<T>::back() const {
 	return m_tail;
 }
 
 template <class T>
-typename LinkedList<T>::Iterator LinkedList<T>::begin() {
-	return m_head;
+typename LinkedList<T>::Iterator LinkedList<T>::begin() const {
+	return Iterator(&(m_head));
 }
 
 template <class T>
-typename LinkedList<T>::Iterator LinkedList<T>::end() {
-	return m_tail->m_next;
+typename LinkedList<T>::Iterator LinkedList<T>::end() const {
+	return Iterator(&(m_tail->m_next));
 }
 
 template <class T>
@@ -215,13 +217,13 @@ void LinkedList<T>::pop_front() {
 template <class T>
 void LinkedList<T>::pop_back() {
 	Node* tmp = m_head;
-		while (tmp->m_next != nullptr)
-		{
-			tmp = tmp->m_next;
-		}
-		tmp = tmp->m_prev;
-		delete tmp->m_next;
-		tmp->m_next = nullptr;
+	while (tmp->m_next != nullptr)
+	{
+		tmp = tmp->m_next;
+	}
+	tmp = tmp->m_prev;
+	delete tmp->m_next;
+	tmp->m_next = nullptr;
 }
 
 template <class T>
@@ -444,7 +446,7 @@ bool LinkedList<T>::operator>=(LinkedList<T>& other_list) {
 template <typename T>
 class LinkedList;
 template <typename T>
-std::ostream& operator<<(std::ostream& out, LinkedList<T>& other_list) {
+std::ostream& operator<<(std::ostream& out, const LinkedList<T>& other_list) {
 	auto tmp = other_list.begin();
 
 	while (tmp != nullptr) {
@@ -541,14 +543,13 @@ T LinkedList<T>::sum() {
 
 template <class T>
 void LinkedList<T>::print() {
-	Node* tmp = m_head;
-	if (tmp != nullptr) {
-		while (tmp) {
-			std::cout << tmp->m_data << " ";
-			tmp = tmp->m_next;
-		}
+	if (m_head == nullptr) {
+		std::cout << "\nList is empty";
 	}
-	else {
-		std::cout << "List is empty";
+
+	Node* tmp = m_head;
+	while (tmp) {
+		std::cout << tmp->m_data << " ";
+		tmp = tmp->m_next;
 	}
 }

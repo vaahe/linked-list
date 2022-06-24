@@ -5,46 +5,40 @@
 #include <iostream>
 
 template <class T>
-class LinkedList;
-
-template <class T>
-std::ostream& operator<<(std::ostream&, LinkedList<T>&);
-
-template <class T>
 class LinkedList {
-public:
-    class Iterator {
-    public:
-        using value_type = T;
-        using reference = T&;
-        using pointer = T*;
-
-    public:
-        Iterator(Node*);
-        T& operator*() const;
-        Node* operator->() const;
-        Iterator& operator++();
-        Iterator& operator++(int);
-        Iterator& operator--();
-        Iterator& operator--(int);
-        bool operator==(const Iterator& other) const;
-        bool operator!=(const Iterator& other) const;
-
-    private:
-        Node* m_ptr;
-    };
-
 private:
-     struct Node {
+    struct Node {
     public:
         Node(T data = T(), Node* next = nullptr, Node* prev = nullptr) :
-         m_next(next),
-         m_prev(prev),
-         m_data(data) {}
+            m_next(next),
+            m_prev(prev),
+            m_data(data) {}
 
         T m_data;
         Node* m_next;
         Node* m_prev;
+    };
+
+public:
+    class Iterator {
+    public:
+        typedef T value_type;
+        typedef T& reference;
+        typedef T* pointer;
+
+    public:
+        Iterator(Node*);
+        reference operator*() const;
+        pointer operator->() const;
+        Iterator& operator++();
+        Iterator& operator++(int);
+        Iterator& operator--();
+        Iterator& operator--(int);
+        bool operator==(const Iterator&) const;
+        bool operator!=(const Iterator&) const;
+
+    private:
+        Node* m_ptr;
     };
 
 public:
@@ -55,10 +49,10 @@ public:
     ~LinkedList();
 
 public:
-    Node* front();  //accesses the first element
-    Node* back();  //accesses the last element
-    Iterator begin();  //returns an iterator to the beginning
-    Iterator end();  //returns an iterator to the end
+    Node* front() const;  //accesses the first element
+    Node* back() const;  //accesses the last element
+    Iterator begin() const;  //returns an iterator to the beginning
+    Iterator end() const;  //returns an iterator to the end
     bool empty() const;  //checks whether a linked list container is empty or not
     int size() const;  //finds the number of elements
     void clear();  //removes all elements
@@ -72,8 +66,7 @@ public:
     void unique();  //removes duplicate values
     void pop_front();  //removes the first element
     void pop_back();
-    template<typename>
-    friend std::ostream& operator<<(std::ostream&, LinkedList<T>&);
+    friend std::ostream& operator<<(std::ostream&, const LinkedList<T>&);
     LinkedList<T>& operator=(const LinkedList<T>&);  //copy operator assignment
     LinkedList<T>& operator=(LinkedList<T>&&);  //move operator assignment
     LinkedList<T>& operator+(LinkedList<T>&);
@@ -84,7 +77,7 @@ public:
     bool operator<=(LinkedList<T>&);
     bool operator>(LinkedList<T>&);
     bool operator>=(LinkedList<T>&);
-
+    void print();
 private:
     Node* m_head;
     Node* m_tail;
@@ -92,7 +85,7 @@ private:
 
 private:
     T sum();
-    void print();
+    
 };
 
 #include "linked_list.hpp"
