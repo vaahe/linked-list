@@ -5,6 +5,12 @@
 #include <iostream>
 
 template <class T>
+class LinkedList;
+
+template <class T>
+std::ostream& operator<<(std::ostream&, LinkedList<T>&);
+
+template <class T>
 class LinkedList {
 public:
     class Iterator {
@@ -14,28 +20,27 @@ public:
         using pointer = T*;
 
     public:
-        explicit Iterator(T* ptr);
-        reference operator*() const;
-        pointer operator->() const;
+        Iterator(Node*);
+        T& operator*() const;
+        Node* operator->() const;
         Iterator& operator++();
         Iterator& operator++(int);
         Iterator& operator--();
         Iterator& operator--(int);
-        bool operator==(const Iterator& other);
-        bool operator!=(const Iterator& other);
+        bool operator==(const Iterator& other) const;
+        bool operator!=(const Iterator& other) const;
 
     private:
-        T* m_ptr;
+        Node* m_ptr;
     };
 
 private:
-    struct Node {
+     struct Node {
     public:
-        Node(T data = T(), Node* next = nullptr, Node* prev = nullptr) {
-            m_data = data;
-            m_next = next;
-            m_prev = prev;
-        }
+        Node(T data = T(), Node* next = nullptr, Node* prev = nullptr) :
+         m_next(next),
+         m_prev(prev),
+         m_data(data) {}
 
         T m_data;
         Node* m_next;
@@ -67,13 +72,14 @@ public:
     void unique();  //removes duplicate values
     void pop_front();  //removes the first element
     void pop_back();
-    friend std::ostream& operator<<(std::ostream&, const LinkedList<T>&);
-    bool operator==(LinkedList<T>&);
-    bool operator!=(LinkedList<T>&);
+    template<typename>
+    friend std::ostream& operator<<(std::ostream&, LinkedList<T>&);
     LinkedList<T>& operator=(const LinkedList<T>&);  //copy operator assignment
     LinkedList<T>& operator=(LinkedList<T>&&);  //move operator assignment
     LinkedList<T>& operator+(LinkedList<T>&);
     LinkedList<T>& operator+=(const LinkedList<T>&);
+    bool operator==(LinkedList<T>&);
+    bool operator!=(LinkedList<T>&);
     bool operator<(LinkedList<T>&);
     bool operator<=(LinkedList<T>&);
     bool operator>(LinkedList<T>&);
