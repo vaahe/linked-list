@@ -1,13 +1,14 @@
+
 template <class T>
-LinkedList<T>::Iterator::Iterator(T* ptr) : m_ptr(ptr) {}
+LinkedList<T>::Iterator::Iterator(Node* ptr) : m_ptr(ptr) {}
 
 template <class T>
 typename LinkedList<T>::Iterator::reference LinkedList<T>::Iterator::operator*() const {
-	return *m_ptr;
+	return m_ptr->m_data;
 }
 
 template <class T>
-typename LinkedList<T>::Iterator::pointer LinkedList<T>::Iterator::operator->() const {
+typename LinkedList<T>::Node* LinkedList<T>::Iterator::operator->() const {
 	return m_ptr;
 }
 
@@ -38,12 +39,12 @@ typename LinkedList<T>::Iterator& LinkedList<T>::Iterator::operator--(int) {
 }
 
 template <class T>
-bool LinkedList<T>::Iterator::operator==(const Iterator& other) {
+bool LinkedList<T>::Iterator::operator==(const Iterator& other) const {
 	return m_ptr == other.m_ptr;
 }
 
 template <class T>
-bool LinkedList<T>::Iterator::operator!=(const Iterator& other) {
+bool LinkedList<T>::Iterator::operator!=(const Iterator& other) const {
 	return m_ptr != other.m_ptr;
 }
 
@@ -128,12 +129,12 @@ typename LinkedList<T>::Node* LinkedList<T>::back() {
 
 template <class T>
 typename LinkedList<T>::Iterator LinkedList<T>::begin() {
-	return Iterator(&(m_head->m_data));
+	return m_head;
 }
 
 template <class T>
 typename LinkedList<T>::Iterator LinkedList<T>::end() {
-	return Iterator(&(m_tail->m_data));
+	return m_tail->m_next;
 }
 
 template <class T>
@@ -442,12 +443,14 @@ bool LinkedList<T>::operator>=(LinkedList<T>& other_list) {
 }
 
 template <typename T>
-std::ostream& operator<<(std::ostream& out, const LinkedList<T>& other_list) {
-	typename LinkedList<T>::template Node* tmp = other_list.m_head;
+class LinkedList;
+template <typename T>
+std::ostream& operator<<(std::ostream& out, LinkedList<T>& other_list) {
+	auto tmp = other_list.begin();
 
 	while (tmp != nullptr) {
-		out << tmp->m_data << " ";
-		tmp = tmp->m_next;
+		out << *tmp << " ";
+		++tmp;
 	}
 
 	return out;
