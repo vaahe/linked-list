@@ -1,4 +1,3 @@
-
 template <class T>
 LinkedList<T>::Iterator::Iterator(Node* ptr) : m_ptr(ptr) {}
 
