@@ -130,12 +130,12 @@ typename LinkedList<T>::Node* LinkedList<T>::back() const {
 
 template <class T>
 typename LinkedList<T>::Iterator LinkedList<T>::begin() const {
-	return Iterator(&(m_head));
+	return m_head;
 }
 
 template <class T>
 typename LinkedList<T>::Iterator LinkedList<T>::end() const {
-	return Iterator(&(m_tail->m_next));
+	return m_tail->m_next;
 }
 
 template <class T>
